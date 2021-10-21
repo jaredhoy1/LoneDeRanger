@@ -1,0 +1,16 @@
+---
+
+
+- name: playbook2 shut no shut 
+  hosts: all
+  connection: local 
+  gather_facts: no
+
+
+  tasks: 
+
+    -name: task2 shut no ahut port
+    cisco.ios.ios_config:
+      lines:
+        shut {{ shut }}
+        no shut {{ no shut }}
