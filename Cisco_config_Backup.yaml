@@ -1,0 +1,12 @@
+---
+- hosts: ios
+  gather_facts: no
+  tasks:
+  - name: Cisco cfg backup
+    ios_config:
+     src: ios_template.j2
+     backup: yes
+     backup_options:
+     filename: "{{ inventory_hostname }}"
+     dir_path: ./
+     
