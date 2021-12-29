@@ -12,20 +12,47 @@
  set_fact:
   file content: "{{ item }}"
  with_file:
+  - "{{ inventory_hostname }}.cfg"
+  no_log: True
 -name: push cfg to gitlab
-uri: https://gitlab.com//projects/{{ gitlab_project_id }}/repository/tree?ref=master&per_page=100&page=1
+uri: 
+  url: https://gitlab.com//projects/{{ gitlab_project_id }}/repository/tree?ref=master&per_page=100&page=1
 headers:
   Privite_token: "{{ gitlab_access_token }}"
   validate certs: no
 method: POST
-body: master
-commit_message: create cisco backup cfg
+body: 
+  branch: master
+commit_message: backup-cisco-running-cfg
 actions:
-  - actions: create
-    file_path: "{{ inventory_hostname }}"
+  - actions: update
+    file_path: "{{ inventory_hostname }}.cfg"
     content: "{{ file_content }}"
 status_code: 201
 body_format: json
+delegate_to: localhost
+- debug:
+   var: response
+   # install jmespath
+   # pip install jmespath
+   -name: get project files
+     set_fact:
+      commit_action: create
+  when: file_name
+  name: push cfg to gitlab
+   uri:
+    url: https://gitlab.com/api/projects/{{ gitlab_project_id }}/repository/com
+    headers:
+    Privite_token: "{{ gitlab_access_token }}"
+  validate certs: no
+method: POST
+body: 
+  branch: master
+commit_message: create cisco cfg
+actions:
+  - actions: "{{ commit_action }}"
+
+
 
 
 
